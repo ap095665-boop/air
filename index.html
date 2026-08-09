@@ -2,906 +2,1027 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+
 <meta name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+      content="width=device-width,
+               initial-scale=1.0,
+               maximum-scale=1.0,
+               user-scalable=no">
 
 <title>Hall of Flames</title>
 
 <style>
+
 * {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html,
 body {
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: #000;
-  font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-/* =========================
-   FIXED PAGE
-========================= */
+/* =========================================
+   FULL SCREEN
+========================================= */
 
 .page {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100dvh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100dvh;
+
+    overflow: hidden;
+
+    background: #000;
 }
 
-/* =========================
-   BACKGROUND VIDEO
-========================= */
 
-#bgVideo {
-  position: fixed;
-  inset: 0;
+/* =========================================
+   VIDEO
+========================================= */
 
-  width: 100%;
-  height: 100%;
+#introVideo {
 
-  object-fit: cover;
-  z-index: -5;
-  pointer-events: none;
+    position: fixed;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    z-index: 100;
+
+    background: #000;
 }
 
-/* Dark cinematic layer */
 
-.video-overlay {
-  position: fixed;
-  inset: 0;
+/*
+   During the first 0.06 seconds:
+   ONLY the video is visible.
+*/
 
-  background:
-    radial-gradient(
-      circle at center,
-      rgba(255,80,0,.08),
-      rgba(0,0,0,.48)
-    ),
-    linear-gradient(
-      180deg,
-      rgba(0,0,0,.32),
-      rgba(0,0,0,.62)
-    );
 
-  z-index: -4;
-  pointer-events: none;
+/* =========================================
+   HALL CONTENT
+========================================= */
+
+#hall {
+
+    position: fixed;
+
+    inset: 0;
+
+    display: flex;
+
+    flex-direction: column;
+    align-items: center;
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    pointer-events: none;
+
+    transform: scale(1.03);
+
+    transition:
+        opacity .7s ease,
+        transform .7s ease;
+
+    z-index: 10;
 }
 
-/* =========================
-   ANIMATED LIGHTS
-========================= */
 
-.ambient {
-  position: fixed;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: -3;
+#hall.show {
+
+    opacity: 1;
+
+    visibility: visible;
+
+    pointer-events: auto;
+
+    transform: scale(1);
+
 }
 
-.orb {
-  position: absolute;
-  width: 100px;
-  height: 100px;
 
-  border-radius: 50%;
+/* =========================================
+   HALL BACKGROUND
+========================================= */
 
-  background:
-    radial-gradient(
-      circle,
-      rgba(255,120,0,.38),
-      transparent 70%
-    );
+.hall-background {
 
-  filter: blur(20px);
+    position: absolute;
 
-  animation: floatOrb 7s ease-in-out infinite alternate;
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle at 50% 20%,
+            rgba(255,90,0,.20),
+            transparent 45%
+        ),
+        linear-gradient(
+            180deg,
+            #160400,
+            #050505 55%,
+            #090000
+        );
+
+    z-index: -5;
 }
 
-.orb:nth-child(1) {
-  left: -20px;
-  top: 20%;
+
+/* =========================================
+   AMBIENT LIGHTS
+========================================= */
+
+.light {
+
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    border-radius: 50%;
+
+    filter: blur(50px);
+
+    opacity: .35;
+
+    pointer-events: none;
+
+    animation: floatingLight 7s ease-in-out infinite alternate;
 }
 
-.orb:nth-child(2) {
-  right: -30px;
-  top: 55%;
-  animation-delay: 2s;
+.light.one {
+
+    background: #ff3c00;
+
+    left: -70px;
+    top: 15%;
 }
 
-.orb:nth-child(3) {
-  left: 30%;
-  bottom: -40px;
-  animation-delay: 4s;
+.light.two {
+
+    background: #ff00aa;
+
+    right: -80px;
+    top: 45%;
+
+    animation-delay: 2s;
 }
 
-@keyframes floatOrb {
-  from {
-    transform: translate3d(0,0,0) scale(.8);
-    opacity: .25;
-  }
+.light.three {
 
-  to {
-    transform: translate3d(40px,-50px,0) scale(1.5);
-    opacity: .65;
-  }
+    background: #00d9ff;
+
+    left: 30%;
+    bottom: -100px;
+
+    animation-delay: 4s;
 }
 
-/* =========================
+
+@keyframes floatingLight {
+
+    from {
+        transform: translate(0,0) scale(.8);
+    }
+
+    to {
+        transform: translate(35px,-40px) scale(1.3);
+    }
+
+}
+
+
+/* =========================================
    HEADER
-========================= */
+========================================= */
 
 .header {
-  width: 100%;
-  flex-shrink: 0;
 
-  padding:
-    max(18px, env(safe-area-inset-top))
-    18px
-    10px;
+    position: relative;
 
-  text-align: center;
+    flex-shrink: 0;
 
-  z-index: 5;
+    width: 100%;
+
+    padding:
+        max(22px, env(safe-area-inset-top))
+        15px
+        12px;
+
+    text-align: center;
 }
+
 
 .title {
-  margin: 0;
 
-  font-size: clamp(28px, 9vw, 64px);
-  font-weight: 1000;
-  letter-spacing: 5px;
+    margin: 0;
 
-  background:
-    linear-gradient(
-      90deg,
-      #ff3b00,
-      #ffd000,
-      #ff4b00,
-      #ff00b7,
-      #00eaff,
-      #ff3b00
-    );
+    font-size:
+        clamp(28px, 9vw, 64px);
 
-  background-size: 300% auto;
+    font-weight: 1000;
 
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+    letter-spacing: 4px;
 
-  animation:
-    titleGradient 5s linear infinite,
-    titleGlow 1.7s ease-in-out infinite alternate;
+    background:
+        linear-gradient(
+            90deg,
+            #ff3000,
+            #ffd000,
+            #ff5b00,
+            #ff00c8,
+            #00eaff,
+            #ff3000
+        );
+
+    background-size: 400% auto;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+
+    animation:
+        gradientMove 5s linear infinite,
+        titleGlow 1.5s ease-in-out infinite alternate;
 }
 
-.subtitle {
-  margin-top: 5px;
 
-  color: rgba(255,255,255,.82);
+@keyframes gradientMove {
 
-  font-size: 11px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
+    to {
+        background-position: 400% center;
+    }
+
 }
 
-@keyframes titleGradient {
-  to {
-    background-position: 300% center;
-  }
-}
 
 @keyframes titleGlow {
-  from {
-    filter:
-      drop-shadow(0 0 4px rgba(255,80,0,.5));
-  }
 
-  to {
-    filter:
-      drop-shadow(0 0 18px rgba(255,80,0,.9));
-  }
+    from {
+        filter:
+            drop-shadow(
+                0 0 5px rgba(255,70,0,.4)
+            );
+    }
+
+    to {
+        filter:
+            drop-shadow(
+                0 0 22px rgba(255,70,0,.95)
+            );
+    }
+
 }
 
-/* =========================
-   GLASS CONTAINER
-========================= */
+
+.subtitle {
+
+    margin-top: 5px;
+
+    color: rgba(255,255,255,.7);
+
+    font-size: 10px;
+
+    letter-spacing: 3px;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================
+   GLASS NAME AREA
+========================================= */
 
 .glass {
-  position: relative;
 
-  width: min(94%, 1000px);
+    position: relative;
 
-  flex: 1;
-  min-height: 0;
+    width: min(94%, 1000px);
 
-  margin: 8px auto 14px;
+    flex: 1;
 
-  border-radius: 28px;
+    min-height: 0;
 
-  background:
-    linear-gradient(
-      135deg,
-      rgba(255,255,255,.13),
-      rgba(255,255,255,.035)
-    );
+    margin:
+        5px auto
+        14px;
 
-  border: 1px solid rgba(255,255,255,.22);
+    border-radius: 28px;
 
-  box-shadow:
-    0 20px 60px rgba(0,0,0,.45),
-    inset 0 1px rgba(255,255,255,.18);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.14),
+            rgba(255,255,255,.035)
+        );
 
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+    border:
+        1px solid rgba(255,255,255,.22);
 
-  overflow: hidden;
+    box-shadow:
+
+        0 25px 70px
+        rgba(0,0,0,.55),
+
+        inset 0 1px
+        rgba(255,255,255,.18);
+
+    backdrop-filter: blur(16px);
+
+    -webkit-backdrop-filter: blur(16px);
+
+    overflow: hidden;
 }
 
-/* Decorative border */
+
+/* animated border */
 
 .glass::before {
-  content: "";
 
-  position: absolute;
-  inset: 0;
+    content: "";
 
-  border-radius: inherit;
+    position: absolute;
 
-  padding: 1px;
+    inset: 0;
 
-  background:
-    linear-gradient(
-      120deg,
-      transparent,
-      rgba(255,120,0,.7),
-      transparent,
-      rgba(0,220,255,.5),
-      transparent
-    );
+    border-radius: inherit;
 
-  background-size: 300% 300%;
+    padding: 1px;
 
-  animation: borderMove 7s linear infinite;
+    background:
+        linear-gradient(
+            120deg,
+            transparent,
+            #ff5100,
+            transparent,
+            #00eaff,
+            transparent,
+            #ff00aa,
+            transparent
+        );
 
-  pointer-events: none;
+    background-size: 400% 400%;
 
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
+    animation:
+        borderAnimation 7s linear infinite;
 
-  mask-composite: exclude;
+    pointer-events: none;
 
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
+    mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
 
-  -webkit-mask-composite: xor;
+    mask-composite: exclude;
+
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+
+    -webkit-mask-composite: xor;
 }
 
-@keyframes borderMove {
-  to {
-    background-position: 300% 300%;
-  }
+
+@keyframes borderAnimation {
+
+    to {
+        background-position: 400% 400%;
+    }
+
 }
 
-/* =========================
-   NAME GRID SCROLLER
-========================= */
+
+/* =========================================
+   NAME GRID
+========================================= */
 
 .name-grid {
-  position: absolute;
-  inset: 0;
 
-  padding: 16px;
+    position: absolute;
 
-  display: grid;
+    inset: 0;
 
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
+    padding: 14px;
 
-  align-content: start;
+    display: grid;
 
-  gap: 10px;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
 
-  overflow-y: auto;
-  overflow-x: hidden;
+    align-content: start;
 
-  overscroll-behavior: contain;
+    gap: 9px;
 
-  scrollbar-width: thin;
+    overflow-y: auto;
 
-  -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
+
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: thin;
 }
 
-/* Desktop */
+
+/* Tablet */
 
 @media (min-width: 600px) {
 
-  .name-grid {
-    grid-template-columns:
-      repeat(3, minmax(0, 1fr));
-  }
+    .name-grid {
+
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
 }
+
+
+/* Desktop */
 
 @media (min-width: 900px) {
 
-  .name-grid {
-    grid-template-columns:
-      repeat(4, minmax(0, 1fr));
-  }
+    .name-grid {
+
+        grid-template-columns:
+            repeat(4, minmax(0, 1fr));
+    }
+
 }
 
-/* =========================
+
+/* =========================================
    NAME CARD
-========================= */
+========================================= */
 
 .name-card {
 
-  position: relative;
+    min-height: 58px;
 
-  min-height: 58px;
+    display: flex;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    align-items: center;
 
-  padding: 10px;
+    justify-content: center;
 
-  overflow: hidden;
+    padding: 10px;
 
-  border-radius: 17px;
+    border-radius: 16px;
 
-  border:
-    1px solid rgba(255,255,255,.2);
+    border:
+        1px solid
+        rgba(255,255,255,.2);
 
-  background:
-    linear-gradient(
-      135deg,
-      rgba(255,255,255,.16),
-      rgba(255,255,255,.045)
-    );
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.17),
+            rgba(255,255,255,.045)
+        );
 
-  color: white;
+    color: white;
 
-  font-size: clamp(12px, 3.4vw, 18px);
-  font-weight: 800;
+    font-size:
+        clamp(12px, 3.5vw, 18px);
 
-  text-align: center;
+    font-weight: 800;
 
-  text-shadow:
-    0 0 6px currentColor,
-    0 0 15px currentColor;
+    text-align: center;
 
-  box-shadow:
-    inset 0 1px rgba(255,255,255,.15),
-    0 8px 20px rgba(0,0,0,.2);
+    text-shadow:
+        0 0 7px currentColor,
+        0 0 18px currentColor;
 
-  animation:
-    nameAppear .45s cubic-bezier(.2,.8,.2,1) both,
-    nameGlow 2.5s ease-in-out infinite alternate;
+    box-shadow:
+        inset 0 1px
+        rgba(255,255,255,.15),
+
+        0 7px 18px
+        rgba(0,0,0,.25);
+
+    opacity: 0;
+
+    animation:
+        nameAppear .5s
+        cubic-bezier(.2,.8,.2,1)
+        forwards;
 }
 
-/* Shine passing through each card */
-
-.name-card::after {
-
-  content: "";
-
-  position: absolute;
-
-  width: 70px;
-  height: 180%;
-
-  top: -40%;
-  left: -100px;
-
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(255,255,255,.35),
-      transparent
-    );
-
-  transform: rotate(20deg);
-
-  animation: shine 3.5s ease-in-out infinite;
-}
-
-@keyframes shine {
-
-  0% {
-    left: -120px;
-  }
-
-  45%,
-  100% {
-    left: 140%;
-  }
-}
 
 @keyframes nameAppear {
 
-  0% {
-    opacity: 0;
-    transform:
-      scale(.45)
-      translateY(18px)
-      rotateX(50deg);
+    0% {
 
-    filter: blur(12px);
-  }
+        opacity: 0;
 
-  55% {
-    opacity: 1;
+        transform:
+            scale(.45)
+            translateY(20px);
 
-    transform:
-      scale(1.08)
-      translateY(-2px)
-      rotateX(0deg);
+        filter: blur(12px);
+    }
 
-    filter: blur(0);
-  }
+    60% {
 
-  100% {
-    opacity: 1;
+        opacity: 1;
 
-    transform:
-      scale(1)
-      translateY(0)
-      rotateX(0);
-  }
+        transform:
+            scale(1.08)
+            translateY(-2px);
+
+        filter: blur(0);
+    }
+
+    100% {
+
+        opacity: 1;
+
+        transform:
+            scale(1)
+            translateY(0);
+    }
+
 }
 
-@keyframes nameGlow {
 
-  from {
-    box-shadow:
-      inset 0 1px rgba(255,255,255,.15),
-      0 5px 16px rgba(0,0,0,.2);
-  }
-
-  to {
-    box-shadow:
-      inset 0 1px rgba(255,255,255,.25),
-      0 0 20px rgba(255,80,0,.25),
-      0 5px 25px rgba(0,0,0,.25);
-  }
-}
-
-/* =========================
-   DIFFERENT COLOURS
-========================= */
+/* =========================================
+   NAME COLOURS
+========================================= */
 
 .name-card:nth-child(5n+1) {
-  color: #ffcf33;
+    color: #ffd43b;
 }
 
 .name-card:nth-child(5n+2) {
-  color: #ff6b35;
+    color: #ff7043;
 }
 
 .name-card:nth-child(5n+3) {
-  color: #ff4fd8;
+    color: #ff4dd8;
 }
 
 .name-card:nth-child(5n+4) {
-  color: #48e8ff;
+    color: #42e8ff;
 }
 
 .name-card:nth-child(5n+5) {
-  color: #9cff66;
+    color: #9cff63;
 }
 
-/* =========================
+
+/* =========================================
    SCROLLBAR
-========================= */
+========================================= */
 
 .name-grid::-webkit-scrollbar {
-  width: 5px;
+    width: 5px;
 }
 
 .name-grid::-webkit-scrollbar-track {
-  background: transparent;
+    background: transparent;
 }
 
 .name-grid::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,.3);
-  border-radius: 20px;
+
+    background:
+        rgba(255,255,255,.35);
+
+    border-radius: 20px;
 }
 
-/* =========================
-   BOTTOM STATUS
-========================= */
 
-.status {
-
-  position: absolute;
-
-  left: 50%;
-  bottom: 8px;
-
-  transform: translateX(-50%);
-
-  z-index: 20;
-
-  padding: 5px 12px;
-
-  border-radius: 20px;
-
-  background: rgba(0,0,0,.38);
-
-  border: 1px solid rgba(255,255,255,.12);
-
-  color: rgba(255,255,255,.65);
-
-  font-size: 9px;
-
-  letter-spacing: 2px;
-
-  white-space: nowrap;
-
-  backdrop-filter: blur(8px);
-}
-
-/* =========================
+/* =========================================
    MOBILE
-========================= */
+========================================= */
 
 @media (max-width: 480px) {
 
-  .glass {
-    width: 94%;
-    border-radius: 24px;
-    margin-bottom: 10px;
-  }
+    .glass {
 
-  .name-grid {
-    padding: 12px;
-    gap: 8px;
-  }
+        width: 94%;
 
-  .name-card {
-    min-height: 54px;
-    border-radius: 14px;
-  }
+        border-radius: 23px;
 
-  .title {
-    letter-spacing: 3px;
-  }
+        margin-bottom: 10px;
+    }
+
+    .name-grid {
+
+        padding: 11px;
+
+        gap: 8px;
+    }
+
+    .name-card {
+
+        min-height: 54px;
+
+        border-radius: 14px;
+    }
+
 }
 
-/* =========================
-   REDUCED MOTION
-========================= */
 
-@media (prefers-reduced-motion: reduce) {
+/* =========================================
+   HIDE HALL DURING INTRO
+========================================= */
 
-  *,
-  *::before,
-  *::after {
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-  }
+body.intro {
+
+    background: #000;
 }
+
+
+/*
+   When intro finishes,
+   video is removed from view.
+*/
+
+body.finished #introVideo {
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    pointer-events: none;
+
+    transition: opacity .25s ease;
+}
+
 </style>
 </head>
 
-<body>
+
+<body class="intro">
+
 
 <div class="page">
 
-  <!-- BACKGROUND VIDEO -->
 
-  <video
-    id="bgVideo"
-    autoplay
-    muted
-    playsinline
-    loop
-    preload="auto"
-  >
-    <source
-      src="https://ap095665-boop.github.io/air/587068603_1786301278413516.mp4"
-      type="video/mp4"
-    >
-  </video>
+    <!-- =====================================
+         INTRO VIDEO
 
-  <div class="video-overlay"></div>
+         NO UI IS SHOWN DURING THIS
+    ====================================== -->
 
-  <!-- AMBIENT EFFECTS -->
+    <video
+        id="introVideo"
 
-  <div class="ambient">
-    <div class="orb"></div>
-    <div class="orb"></div>
-    <div class="orb"></div>
-  </div>
+        autoplay
+        muted
+        playsinline
 
-  <!-- HEADER -->
+        preload="auto"
 
-  <header class="header">
+        src="https://ap095665-boop.github.io/air/587068603_1786301278413516.mp4">
+    </video>
 
-    <h1 class="title">
-      HALL OF FLAMES
-    </h1>
 
-    <div class="subtitle">
-      Every name becomes a flame
-    </div>
 
-  </header>
+    <!-- =====================================
+         HALL OF FLAMES
+    ====================================== -->
 
-  <!-- GLASS SCROLLING AREA -->
+    <section id="hall">
 
-  <main class="glass">
 
-    <div
-      id="nameGrid"
-      class="name-grid"
-      aria-label="Hall of Flames names"
-    ></div>
+        <div class="hall-background"></div>
 
-    <div class="status" id="status">
-      IGNITING...
-    </div>
 
-  </main>
+        <div class="light one"></div>
+        <div class="light two"></div>
+        <div class="light three"></div>
+
+
+
+        <header class="header">
+
+            <h1 class="title">
+                HALL OF FLAMES
+            </h1>
+
+            <div class="subtitle">
+                Every name becomes a flame
+            </div>
+
+        </header>
+
+
+
+        <div class="glass">
+
+            <div
+                id="nameGrid"
+                class="name-grid">
+            </div>
+
+        </div>
+
+
+    </section>
 
 </div>
 
+
+
 <script>
 
-/* =====================================================
-   ADD YOUR COMPLETE NAME LIST HERE
-===================================================== */
+/* =========================================
+   YOUR NAMES
+========================================= */
 
 const names = [
 
-  "Amal",
-  "Arjun",
-  "David",
-  "Daniel",
-  "Joseph",
-  "Michael",
-  "Thomas",
-  "John",
-  "Peter",
-  "Samuel",
-  "Anthony",
-  "Christopher",
-  "Matthew",
-  "James",
-  "Benjamin",
-  "Andrew",
-  "Joshua",
-  "Ryan",
-  "Kevin",
-  "Alex",
-  "Daniel",
-  "George",
-  "William",
-  "Robert",
-  "Edward",
-  "Henry",
-  "Charles",
-  "Oliver",
-  "Lucas",
-  "Noah",
-  "Ethan",
-  "Liam",
-  "Mason",
-  "Jack",
-  "Leo",
-  "Oscar",
-  "Nathan",
-  "Adam",
-  "Jacob",
-  "Isaac"
+    "Amal",
+    "Arjun",
+    "David",
+    "Daniel",
+    "Joseph",
+    "Michael",
+    "Thomas",
+    "John",
+    "Peter",
+    "Samuel",
+    "Anthony",
+    "Christopher",
+    "Matthew",
+    "James",
+    "Benjamin",
+    "Andrew",
+    "Joshua",
+    "Ryan",
+    "Kevin",
+    "Alex",
+    "George",
+    "William",
+    "Robert",
+    "Edward",
+    "Henry",
+    "Charles",
+    "Oliver",
+    "Lucas",
+    "Noah",
+    "Ethan",
+    "Liam",
+    "Mason",
+    "Jack",
+    "Leo",
+    "Oscar",
+    "Nathan",
+    "Adam",
+    "Jacob",
+    "Isaac"
 
-  // ADD MORE NAMES HERE
+    /* ADD ALL YOUR OTHER NAMES HERE */
 
 ];
 
 
-/* =====================================================
+
+/* =========================================
    ELEMENTS
-===================================================== */
+========================================= */
 
 const video =
-  document.getElementById("bgVideo");
+    document.getElementById("introVideo");
+
+const hall =
+    document.getElementById("hall");
 
 const grid =
-  document.getElementById("nameGrid");
-
-const status =
-  document.getElementById("status");
+    document.getElementById("nameGrid");
 
 
-/* =====================================================
-   SETTINGS
-===================================================== */
 
-/*
-   0.06 seconds
-   = 60 milliseconds
-*/
+/* =========================================
+   IMPORTANT:
+   0.06 SECOND INTRO
+========================================= */
 
-const NAME_INTERVAL = 60;
+const INTRO_TIME = 0.06;
 
 
-/* =====================================================
-   STATE
-===================================================== */
 
-let currentIndex = 0;
-let started = false;
+/* =========================================
+   SHOW HALL
+========================================= */
+
+function showHall() {
+
+    if (
+        document.body.classList.contains(
+            "finished"
+        )
+    ) {
+        return;
+    }
 
 
-/* =====================================================
-   CREATE NAME
-===================================================== */
+    /*
+       Stop video completely.
+    */
 
-function createName(name) {
+    video.pause();
 
-  const card =
-    document.createElement("div");
 
-  card.className = "name-card";
+    /*
+       Make sure it never loops.
+    */
 
-  card.textContent = name;
+    video.removeAttribute("loop");
 
-  /*
-     Small random animation variation
-  */
 
-  card.style.animationDelay =
-    `${Math.random() * .35}s, ${Math.random() * 1.5}s`;
+    /*
+       Hide video.
+    */
 
-  grid.appendChild(card);
+    document.body.classList.remove("intro");
 
-  /*
-     Keep newest name visible while
-     user hasn't manually scrolled.
-  */
+    document.body.classList.add("finished");
 
-  if (
-    grid.scrollHeight -
-    grid.scrollTop -
-    grid.clientHeight
-    < 120
-  ) {
 
-    grid.scrollTop =
-      grid.scrollHeight;
+    /*
+       Show Hall of Flames.
+    */
 
-  }
+    hall.classList.add("show");
+
+
+    /*
+       Now display names.
+    */
+
+    displayNames();
+
 }
 
 
-/* =====================================================
-   REVEAL NAMES EVERY 60ms
-===================================================== */
 
-function revealNames() {
+/* =========================================
+   DISPLAY ALL NAMES
+========================================= */
 
-  if (currentIndex >= names.length) {
+function displayNames() {
 
-    status.textContent =
-      `${names.length} FLAMES IGNITED`;
+    /*
+       Names are NOT created while
+       the intro video is visible.
 
-    return;
-  }
+       They start only AFTER 0.06s.
+    */
 
-  createName(
-    names[currentIndex]
-  );
+    names.forEach(
+        (name, index) => {
 
-  currentIndex++;
+            const card =
+                document.createElement("div");
 
-  status.textContent =
-    `${currentIndex} / ${names.length}`;
+            card.className =
+                "name-card";
 
-  setTimeout(
-    revealNames,
-    NAME_INTERVAL
-  );
+            card.textContent =
+                name;
+
+
+            /*
+               Tiny stagger purely for
+               the entrance animation.
+            */
+
+            card.style.animationDelay =
+                `${index * 0.025}s`;
+
+
+            grid.appendChild(card);
+
+        }
+    );
+
 }
 
 
-/* =====================================================
-   START WHEN VIDEO STARTS
-===================================================== */
 
-function startHall() {
+/* =========================================
+   START INTRO
+========================================= */
 
-  if (started) return;
+function startIntro() {
 
-  started = true;
+    /*
+       Make absolutely sure video
+       starts from beginning.
+    */
 
-  /*
-     Start the name sequence.
-     Video time = 0
-  */
+    video.currentTime = 0;
 
-  currentIndex = 0;
 
-  setTimeout(
-    revealNames,
-    NAME_INTERVAL
-  );
+    /*
+       Video should NOT loop.
+    */
+
+    video.loop = false;
+
+
+    /*
+       Play video.
+
+       NOTE:
+       Browsers generally block autoplay
+       with sound. The video is therefore
+       initially muted for autoplay.
+    */
+
+    video.muted = true;
+
+    video.play().catch(() => {
+
+        /*
+           If browser blocks playback,
+           wait for user interaction.
+        */
+
+        const start =
+            () => {
+
+                video.muted = false;
+
+                video.play();
+
+                document.removeEventListener(
+                    "touchstart",
+                    start
+                );
+
+                document.removeEventListener(
+                    "click",
+                    start
+                );
+
+            };
+
+
+        document.addEventListener(
+            "touchstart",
+            start,
+            { once: true }
+        );
+
+        document.addEventListener(
+            "click",
+            start,
+            { once: true }
+        );
+
+    });
+
+
+    /*
+       Wait exactly 0.06 seconds.
+    */
+
+    setTimeout(
+        showHall,
+        INTRO_TIME * 1000
+    );
+
 }
 
 
-/* =====================================================
-   VIDEO START
-===================================================== */
 
-video.addEventListener(
-  "play",
-  startHall
-);
+/* =========================================
+   START
+========================================= */
 
+if (
+    document.readyState ===
+    "loading"
+) {
 
-/*
-   Fallback in case browser has
-   already started the video.
-*/
+    document.addEventListener(
+        "DOMContentLoaded",
+        startIntro
+    );
 
-if (!video.paused) {
-  startHall();
+} else {
+
+    startIntro();
+
 }
-
-
-/* =====================================================
-   ENSURE AUTOPLAY
-===================================================== */
-
-video.play().catch(() => {
-
-  /*
-     Mobile browsers may block autoplay
-     until user interaction.
-  */
-
-  document.addEventListener(
-    "click",
-    () => video.play(),
-    { once: true }
-  );
-
-  document.addEventListener(
-    "touchstart",
-    () => video.play(),
-    { once: true }
-  );
-
-});
-
-
-/* =====================================================
-   VIDEO ERROR
-===================================================== */
-
-video.addEventListener(
-  "error",
-  () => {
-
-    status.textContent =
-      "VIDEO UNAVAILABLE";
-
-  }
-);
 
 </script>
 
 </body>
-  </html>
+</html>
