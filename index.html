@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Hall of Flames</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* =========================
+   FIXED PAGE
+========================= */
+
+.page {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* =========================
+   BACKGROUND VIDEO
+========================= */
+
+#bgVideo {
+  position: fixed;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  z-index: -5;
+  pointer-events: none;
+}
+
+/* Dark cinematic layer */
+
+.video-overlay {
+  position: fixed;
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(255,80,0,.08),
+      rgba(0,0,0,.48)
+    ),
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.32),
+      rgba(0,0,0,.62)
+    );
+
+  z-index: -4;
+  pointer-events: none;
+}
+
+/* =========================
+   ANIMATED LIGHTS
+========================= */
+
+.ambient {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -3;
+}
+
+.orb {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,120,0,.38),
+      transparent 70%
+    );
+
+  filter: blur(20px);
+
+  animation: floatOrb 7s ease-in-out infinite alternate;
+}
+
+.orb:nth-child(1) {
+  left: -20px;
+  top: 20%;
+}
+
+.orb:nth-child(2) {
+  right: -30px;
+  top: 55%;
+  animation-delay: 2s;
+}
+
+.orb:nth-child(3) {
+  left: 30%;
+  bottom: -40px;
+  animation-delay: 4s;
+}
+
+@keyframes floatOrb {
+  from {
+    transform: translate3d(0,0,0) scale(.8);
+    opacity: .25;
+  }
+
+  to {
+    transform: translate3d(40px,-50px,0) scale(1.5);
+    opacity: .65;
+  }
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+  width: 100%;
+  flex-shrink: 0;
+
+  padding:
+    max(18px, env(safe-area-inset-top))
+    18px
+    10px;
+
+  text-align: center;
+
+  z-index: 5;
+}
+
+.title {
+  margin: 0;
+
+  font-size: clamp(28px, 9vw, 64px);
+  font-weight: 1000;
+  letter-spacing: 5px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #ff3b00,
+      #ffd000,
+      #ff4b00,
+      #ff00b7,
+      #00eaff,
+      #ff3b00
+    );
+
+  background-size: 300% auto;
+
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+
+  animation:
+    titleGradient 5s linear infinite,
+    titleGlow 1.7s ease-in-out infinite alternate;
+}
+
+.subtitle {
+  margin-top: 5px;
+
+  color: rgba(255,255,255,.82);
+
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+@keyframes titleGradient {
+  to {
+    background-position: 300% center;
+  }
+}
+
+@keyframes titleGlow {
+  from {
+    filter:
+      drop-shadow(0 0 4px rgba(255,80,0,.5));
+  }
+
+  to {
+    filter:
+      drop-shadow(0 0 18px rgba(255,80,0,.9));
+  }
+}
+
+/* =========================
+   GLASS CONTAINER
+========================= */
+
+.glass {
+  position: relative;
+
+  width: min(94%, 1000px);
+
+  flex: 1;
+  min-height: 0;
+
+  margin: 8px auto 14px;
+
+  border-radius: 28px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.13),
+      rgba(255,255,255,.035)
+    );
+
+  border: 1px solid rgba(255,255,255,.22);
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,.45),
+    inset 0 1px rgba(255,255,255,.18);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  overflow: hidden;
+}
+
+/* Decorative border */
+
+.glass::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  border-radius: inherit;
+
+  padding: 1px;
+
+  background:
+    linear-gradient(
+      120deg,
+      transparent,
+      rgba(255,120,0,.7),
+      transparent,
+      rgba(0,220,255,.5),
+      transparent
+    );
+
+  background-size: 300% 300%;
+
+  animation: borderMove 7s linear infinite;
+
+  pointer-events: none;
+
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+
+  mask-composite: exclude;
+
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+
+  -webkit-mask-composite: xor;
+}
+
+@keyframes borderMove {
+  to {
+    background-position: 300% 300%;
+  }
+}
+
+/* =========================
+   NAME GRID SCROLLER
+========================= */
+
+.name-grid {
+  position: absolute;
+  inset: 0;
+
+  padding: 16px;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  align-content: start;
+
+  gap: 10px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  overscroll-behavior: contain;
+
+  scrollbar-width: thin;
+
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Desktop */
+
+@media (min-width: 600px) {
+
+  .name-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 900px) {
+
+  .name-grid {
+    grid-template-columns:
+      repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* =========================
+   NAME CARD
+========================= */
+
+.name-card {
+
+  position: relative;
+
+  min-height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 10px;
+
+  overflow: hidden;
+
+  border-radius: 17px;
+
+  border:
+    1px solid rgba(255,255,255,.2);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.16),
+      rgba(255,255,255,.045)
+    );
+
+  color: white;
+
+  font-size: clamp(12px, 3.4vw, 18px);
+  font-weight: 800;
+
+  text-align: center;
+
+  text-shadow:
+    0 0 6px currentColor,
+    0 0 15px currentColor;
+
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.15),
+    0 8px 20px rgba(0,0,0,.2);
+
+  animation:
+    nameAppear .45s cubic-bezier(.2,.8,.2,1) both,
+    nameGlow 2.5s ease-in-out infinite alternate;
+}
+
+/* Shine passing through each card */
+
+.name-card::after {
+
+  content: "";
+
+  position: absolute;
+
+  width: 70px;
+  height: 180%;
+
+  top: -40%;
+  left: -100px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.35),
+      transparent
+    );
+
+  transform: rotate(20deg);
+
+  animation: shine 3.5s ease-in-out infinite;
+}
+
+@keyframes shine {
+
+  0% {
+    left: -120px;
+  }
+
+  45%,
+  100% {
+    left: 140%;
+  }
+}
+
+@keyframes nameAppear {
+
+  0% {
+    opacity: 0;
+    transform:
+      scale(.45)
+      translateY(18px)
+      rotateX(50deg);
+
+    filter: blur(12px);
+  }
+
+  55% {
+    opacity: 1;
+
+    transform:
+      scale(1.08)
+      translateY(-2px)
+      rotateX(0deg);
+
+    filter: blur(0);
+  }
+
+  100% {
+    opacity: 1;
+
+    transform:
+      scale(1)
+      translateY(0)
+      rotateX(0);
+  }
+}
+
+@keyframes nameGlow {
+
+  from {
+    box-shadow:
+      inset 0 1px rgba(255,255,255,.15),
+      0 5px 16px rgba(0,0,0,.2);
+  }
+
+  to {
+    box-shadow:
+      inset 0 1px rgba(255,255,255,.25),
+      0 0 20px rgba(255,80,0,.25),
+      0 5px 25px rgba(0,0,0,.25);
+  }
+}
+
+/* =========================
+   DIFFERENT COLOURS
+========================= */
+
+.name-card:nth-child(5n+1) {
+  color: #ffcf33;
+}
+
+.name-card:nth-child(5n+2) {
+  color: #ff6b35;
+}
+
+.name-card:nth-child(5n+3) {
+  color: #ff4fd8;
+}
+
+.name-card:nth-child(5n+4) {
+  color: #48e8ff;
+}
+
+.name-card:nth-child(5n+5) {
+  color: #9cff66;
+}
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+.name-grid::-webkit-scrollbar {
+  width: 5px;
+}
+
+.name-grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.name-grid::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.3);
+  border-radius: 20px;
+}
+
+/* =========================
+   BOTTOM STATUS
+========================= */
+
+.status {
+
+  position: absolute;
+
+  left: 50%;
+  bottom: 8px;
+
+  transform: translateX(-50%);
+
+  z-index: 20;
+
+  padding: 5px 12px;
+
+  border-radius: 20px;
+
+  background: rgba(0,0,0,.38);
+
+  border: 1px solid rgba(255,255,255,.12);
+
+  color: rgba(255,255,255,.65);
+
+  font-size: 9px;
+
+  letter-spacing: 2px;
+
+  white-space: nowrap;
+
+  backdrop-filter: blur(8px);
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 480px) {
+
+  .glass {
+    width: 94%;
+    border-radius: 24px;
+    margin-bottom: 10px;
+  }
+
+  .name-grid {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .name-card {
+    min-height: 54px;
+    border-radius: 14px;
+  }
+
+  .title {
+    letter-spacing: 3px;
+  }
+}
+
+/* =========================
+   REDUCED MOTION
+========================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <!-- BACKGROUND VIDEO -->
+
+  <video
+    id="bgVideo"
+    autoplay
+    muted
+    playsinline
+    loop
+    preload="auto"
+  >
+    <source
+      src="https://ap095665-boop.github.io/air/587068603_1786301278413516.mp4"
+      type="video/mp4"
+    >
+  </video>
+
+  <div class="video-overlay"></div>
+
+  <!-- AMBIENT EFFECTS -->
+
+  <div class="ambient">
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+  </div>
+
+  <!-- HEADER -->
+
+  <header class="header">
+
+    <h1 class="title">
+      HALL OF FLAMES
+    </h1>
+
+    <div class="subtitle">
+      Every name becomes a flame
+    </div>
+
+  </header>
+
+  <!-- GLASS SCROLLING AREA -->
+
+  <main class="glass">
+
+    <div
+      id="nameGrid"
+      class="name-grid"
+      aria-label="Hall of Flames names"
+    ></div>
+
+    <div class="status" id="status">
+      IGNITING...
+    </div>
+
+  </main>
+
+</div>
+
+<script>
+
+/* =====================================================
+   ADD YOUR COMPLETE NAME LIST HERE
+===================================================== */
+
+const names = [
+
+  "Amal",
+  "Arjun",
+  "David",
+  "Daniel",
+  "Joseph",
+  "Michael",
+  "Thomas",
+  "John",
+  "Peter",
+  "Samuel",
+  "Anthony",
+  "Christopher",
+  "Matthew",
+  "James",
+  "Benjamin",
+  "Andrew",
+  "Joshua",
+  "Ryan",
+  "Kevin",
+  "Alex",
+  "Daniel",
+  "George",
+  "William",
+  "Robert",
+  "Edward",
+  "Henry",
+  "Charles",
+  "Oliver",
+  "Lucas",
+  "Noah",
+  "Ethan",
+  "Liam",
+  "Mason",
+  "Jack",
+  "Leo",
+  "Oscar",
+  "Nathan",
+  "Adam",
+  "Jacob",
+  "Isaac"
+
+  // ADD MORE NAMES HERE
+
+];
+
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const video =
+  document.getElementById("bgVideo");
+
+const grid =
+  document.getElementById("nameGrid");
+
+const status =
+  document.getElementById("status");
+
+
+/* =====================================================
+   SETTINGS
+===================================================== */
+
+/*
+   0.06 seconds
+   = 60 milliseconds
+*/
+
+const NAME_INTERVAL = 60;
+
+
+/* =====================================================
+   STATE
+===================================================== */
+
+let currentIndex = 0;
+let started = false;
+
+
+/* =====================================================
+   CREATE NAME
+===================================================== */
+
+function createName(name) {
+
+  const card =
+    document.createElement("div");
+
+  card.className = "name-card";
+
+  card.textContent = name;
+
+  /*
+     Small random animation variation
+  */
+
+  card.style.animationDelay =
+    `${Math.random() * .35}s, ${Math.random() * 1.5}s`;
+
+  grid.appendChild(card);
+
+  /*
+     Keep newest name visible while
+     user hasn't manually scrolled.
+  */
+
+  if (
+    grid.scrollHeight -
+    grid.scrollTop -
+    grid.clientHeight
+    < 120
+  ) {
+
+    grid.scrollTop =
+      grid.scrollHeight;
+
+  }
+}
+
+
+/* =====================================================
+   REVEAL NAMES EVERY 60ms
+===================================================== */
+
+function revealNames() {
+
+  if (currentIndex >= names.length) {
+
+    status.textContent =
+      `${names.length} FLAMES IGNITED`;
+
+    return;
+  }
+
+  createName(
+    names[currentIndex]
+  );
+
+  currentIndex++;
+
+  status.textContent =
+    `${currentIndex} / ${names.length}`;
+
+  setTimeout(
+    revealNames,
+    NAME_INTERVAL
+  );
+}
+
+
+/* =====================================================
+   START WHEN VIDEO STARTS
+===================================================== */
+
+function startHall() {
+
+  if (started) return;
+
+  started = true;
+
+  /*
+     Start the name sequence.
+     Video time = 0
+  */
+
+  currentIndex = 0;
+
+  setTimeout(
+    revealNames,
+    NAME_INTERVAL
+  );
+}
+
+
+/* =====================================================
+   VIDEO START
+===================================================== */
+
+video.addEventListener(
+  "play",
+  startHall
+);
+
+
+/*
+   Fallback in case browser has
+   already started the video.
+*/
+
+if (!video.paused) {
+  startHall();
+}
+
+
+/* =====================================================
+   ENSURE AUTOPLAY
+===================================================== */
+
+video.play().catch(() => {
+
+  /*
+     Mobile browsers may block autoplay
+     until user interaction.
+  */
+
+  document.addEventListener(
+    "click",
+    () => video.play(),
+    { once: true }
+  );
+
+  document.addEventListener(
+    "touchstart",
+    () => video.play(),
+    { once: true }
+  );
+
+});
+
+
+/* =====================================================
+   VIDEO ERROR
+===================================================== */
+
+video.addEventListener(
+  "error",
+  () => {
+
+    status.textContent =
+      "VIDEO UNAVAILABLE";
+
+  }
+);
+
+</script>
+
+</body>
+  </html>
