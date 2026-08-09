@@ -5,13 +5,17 @@
 
 <meta name="viewport"
       content="width=device-width,
-               initial-scale=1.0,
-               maximum-scale=1.0,
-               user-scalable=no">
+      initial-scale=1.0,
+      maximum-scale=1.0,
+      user-scalable=no">
 
 <title>Hall of Flames</title>
 
 <style>
+
+/* ==================================================
+   RESET
+================================================== */
 
 * {
     box-sizing: border-box;
@@ -28,31 +32,30 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-/* =========================================
-   FULL SCREEN
-========================================= */
 
-.page {
+/* ==================================================
+   MAIN PAGE
+================================================== */
+
+#page {
     position: fixed;
     inset: 0;
-
     width: 100%;
     height: 100dvh;
-
     overflow: hidden;
-
     background: #000;
 }
 
 
-/* =========================================
-   VIDEO
-========================================= */
+/* ==================================================
+   INTRO VIDEO
+
+   THIS IS THE ONLY THING VISIBLE
+   DURING THE FIRST 0.06 SECOND
+================================================== */
 
 #introVideo {
-
     position: fixed;
-
     inset: 0;
 
     width: 100%;
@@ -60,27 +63,89 @@ body {
 
     object-fit: cover;
 
+    background: #000;
+
     z-index: 100;
 
-    background: #000;
+    opacity: 1;
+    visibility: visible;
+
+    pointer-events: none;
 }
 
 
-/*
-   During the first 0.06 seconds:
-   ONLY the video is visible.
-*/
+/* ==================================================
+   TAP SCREEN
+
+   Only appears if browser blocks
+   autoplay with sound.
+================================================== */
+
+#startScreen {
+
+    position: fixed;
+    inset: 0;
+
+    z-index: 200;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #000;
+
+    color: white;
+
+    text-align: center;
+}
+
+#startButton {
+
+    border: 1px solid rgba(255,255,255,.3);
+
+    border-radius: 20px;
+
+    padding: 18px 28px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,80,0,.25),
+            rgba(255,0,180,.15)
+        );
+
+    backdrop-filter: blur(15px);
+
+    font-size: 16px;
+
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    box-shadow:
+        0 0 30px rgba(255,70,0,.3);
+
+    cursor: pointer;
+}
 
 
-/* =========================================
-   HALL CONTENT
-========================================= */
+/* ==================================================
+   HALL
+
+   IMPORTANT:
+   COMPLETELY HIDDEN AT START
+================================================== */
 
 #hall {
 
     position: fixed;
-
     inset: 0;
+
+    width: 100%;
+    height: 100dvh;
 
     display: flex;
 
@@ -88,64 +153,69 @@ body {
     align-items: center;
 
     opacity: 0;
-
     visibility: hidden;
 
     pointer-events: none;
 
-    transform: scale(1.03);
+    z-index: 10;
 
     transition:
-        opacity .7s ease,
-        transform .7s ease;
-
-    z-index: 10;
+        opacity .45s ease,
+        visibility .45s ease;
 }
 
 
-#hall.show {
+/* ==================================================
+   HALL IS SHOWN ONLY AFTER 0.06s
+================================================== */
+
+#hall.visible {
 
     opacity: 1;
 
     visibility: visible;
 
     pointer-events: auto;
-
-    transform: scale(1);
-
 }
 
 
-/* =========================================
+/* ==================================================
    HALL BACKGROUND
-========================================= */
+================================================== */
 
-.hall-background {
+.hall-bg {
 
     position: absolute;
-
     inset: 0;
 
     background:
+
         radial-gradient(
-            circle at 50% 20%,
-            rgba(255,90,0,.20),
-            transparent 45%
+            circle at 50% 15%,
+            rgba(255,80,0,.22),
+            transparent 42%
         ),
+
+        radial-gradient(
+            circle at 80% 70%,
+            rgba(255,0,170,.12),
+            transparent 40%
+        ),
+
         linear-gradient(
             180deg,
-            #160400,
+            #180400,
             #050505 55%,
             #090000
         );
 
-    z-index: -5;
+    z-index: -10;
 }
 
 
-/* =========================================
-   AMBIENT LIGHTS
-========================================= */
+/* ==================================================
+   FLOATING LIGHTS
+================================================== */
 
 .light {
 
@@ -156,73 +226,75 @@ body {
 
     border-radius: 50%;
 
-    filter: blur(50px);
+    filter: blur(60px);
 
-    opacity: .35;
+    opacity: .3;
 
     pointer-events: none;
 
-    animation: floatingLight 7s ease-in-out infinite alternate;
+    animation:
+        floatLight 7s ease-in-out infinite alternate;
 }
 
-.light.one {
+.light1 {
 
-    background: #ff3c00;
-
-    left: -70px;
+    left: -80px;
     top: 15%;
+
+    background: #ff4200;
 }
 
-.light.two {
-
-    background: #ff00aa;
+.light2 {
 
     right: -80px;
     top: 45%;
 
+    background: #ff00b7;
+
     animation-delay: 2s;
 }
 
-.light.three {
-
-    background: #00d9ff;
+.light3 {
 
     left: 30%;
     bottom: -100px;
+
+    background: #00dfff;
 
     animation-delay: 4s;
 }
 
 
-@keyframes floatingLight {
+@keyframes floatLight {
 
     from {
-        transform: translate(0,0) scale(.8);
+        transform:
+            translate(0,0)
+            scale(.8);
     }
 
     to {
-        transform: translate(35px,-40px) scale(1.3);
+        transform:
+            translate(40px,-40px)
+            scale(1.35);
     }
-
 }
 
 
-/* =========================================
+/* ==================================================
    HEADER
-========================================= */
+================================================== */
 
 .header {
 
-    position: relative;
+    width: 100%;
 
     flex-shrink: 0;
 
-    width: 100%;
-
     padding:
-        max(22px, env(safe-area-inset-top))
+        max(20px, env(safe-area-inset-top))
         15px
-        12px;
+        10px;
 
     text-align: center;
 }
@@ -233,21 +305,23 @@ body {
     margin: 0;
 
     font-size:
-        clamp(28px, 9vw, 64px);
+        clamp(27px, 9vw, 64px);
 
     font-weight: 1000;
 
     letter-spacing: 4px;
 
     background:
+
         linear-gradient(
             90deg,
-            #ff3000,
+
+            #ff2d00,
             #ffd000,
-            #ff5b00,
+            #ff5900,
             #ff00c8,
             #00eaff,
-            #ff3000
+            #ff2d00
         );
 
     background-size: 400% auto;
@@ -258,17 +332,16 @@ body {
     color: transparent;
 
     animation:
-        gradientMove 5s linear infinite,
+        titleGradient 5s linear infinite,
         titleGlow 1.5s ease-in-out infinite alternate;
 }
 
 
-@keyframes gradientMove {
+@keyframes titleGradient {
 
     to {
         background-position: 400% center;
     }
-
 }
 
 
@@ -277,17 +350,18 @@ body {
     from {
         filter:
             drop-shadow(
-                0 0 5px rgba(255,70,0,.4)
+                0 0 5px
+                rgba(255,60,0,.4)
             );
     }
 
     to {
         filter:
             drop-shadow(
-                0 0 22px rgba(255,70,0,.95)
+                0 0 22px
+                rgba(255,70,0,1)
             );
     }
-
 }
 
 
@@ -295,7 +369,8 @@ body {
 
     margin-top: 5px;
 
-    color: rgba(255,255,255,.7);
+    color:
+        rgba(255,255,255,.7);
 
     font-size: 10px;
 
@@ -305,9 +380,9 @@ body {
 }
 
 
-/* =========================================
-   GLASS NAME AREA
-========================================= */
+/* ==================================================
+   GLASS CONTAINER
+================================================== */
 
 .glass {
 
@@ -320,12 +395,12 @@ body {
     min-height: 0;
 
     margin:
-        5px auto
-        14px;
+        5px auto 12px;
 
-    border-radius: 28px;
+    border-radius: 27px;
 
     background:
+
         linear-gradient(
             135deg,
             rgba(255,255,255,.14),
@@ -333,7 +408,8 @@ body {
         );
 
     border:
-        1px solid rgba(255,255,255,.22);
+        1px solid
+        rgba(255,255,255,.22);
 
     box-shadow:
 
@@ -351,7 +427,9 @@ body {
 }
 
 
-/* animated border */
+/* ==================================================
+   ANIMATED GLASS BORDER
+================================================== */
 
 .glass::before {
 
@@ -366,21 +444,23 @@ body {
     padding: 1px;
 
     background:
+
         linear-gradient(
             120deg,
+
             transparent,
-            #ff5100,
+            #ff4b00,
             transparent,
             #00eaff,
             transparent,
-            #ff00aa,
+            #ff00b7,
             transparent
         );
 
     background-size: 400% 400%;
 
     animation:
-        borderAnimation 7s linear infinite;
+        borderMove 7s linear infinite;
 
     pointer-events: none;
 
@@ -398,31 +478,31 @@ body {
 }
 
 
-@keyframes borderAnimation {
+@keyframes borderMove {
 
     to {
-        background-position: 400% 400%;
+        background-position:
+            400% 400%;
     }
-
 }
 
 
-/* =========================================
+/* ==================================================
    NAME GRID
-========================================= */
+================================================== */
 
-.name-grid {
+#nameGrid {
 
     position: absolute;
 
     inset: 0;
 
-    padding: 14px;
+    padding: 13px;
 
     display: grid;
 
     grid-template-columns:
-        repeat(2, minmax(0, 1fr));
+        repeat(2, minmax(0,1fr));
 
     align-content: start;
 
@@ -438,39 +518,41 @@ body {
 }
 
 
-/* Tablet */
+/* ==================================================
+   TABLET
+================================================== */
 
 @media (min-width: 600px) {
 
-    .name-grid {
+    #nameGrid {
 
         grid-template-columns:
-            repeat(3, minmax(0, 1fr));
+            repeat(3, minmax(0,1fr));
     }
-
 }
 
 
-/* Desktop */
+/* ==================================================
+   DESKTOP
+================================================== */
 
 @media (min-width: 900px) {
 
-    .name-grid {
+    #nameGrid {
 
         grid-template-columns:
-            repeat(4, minmax(0, 1fr));
+            repeat(4, minmax(0,1fr));
     }
-
 }
 
 
-/* =========================================
+/* ==================================================
    NAME CARD
-========================================= */
+================================================== */
 
-.name-card {
+.name {
 
-    min-height: 58px;
+    min-height: 57px;
 
     display: flex;
 
@@ -487,16 +569,15 @@ body {
         rgba(255,255,255,.2);
 
     background:
+
         linear-gradient(
             135deg,
             rgba(255,255,255,.17),
-            rgba(255,255,255,.045)
+            rgba(255,255,255,.04)
         );
 
-    color: white;
-
     font-size:
-        clamp(12px, 3.5vw, 18px);
+        clamp(12px,3.5vw,18px);
 
     font-weight: 800;
 
@@ -504,11 +585,12 @@ body {
 
     text-shadow:
         0 0 7px currentColor,
-        0 0 18px currentColor;
+        0 0 17px currentColor;
 
     box-shadow:
+
         inset 0 1px
-        rgba(255,255,255,.15),
+        rgba(255,255,255,.16),
 
         0 7px 18px
         rgba(0,0,0,.25);
@@ -516,13 +598,13 @@ body {
     opacity: 0;
 
     animation:
-        nameAppear .5s
+        nameIn .5s
         cubic-bezier(.2,.8,.2,1)
         forwards;
 }
 
 
-@keyframes nameAppear {
+@keyframes nameIn {
 
     0% {
 
@@ -530,7 +612,7 @@ body {
 
         transform:
             scale(.45)
-            translateY(20px);
+            translateY(18px);
 
         filter: blur(12px);
     }
@@ -554,48 +636,47 @@ body {
             scale(1)
             translateY(0);
     }
-
 }
 
 
-/* =========================================
-   NAME COLOURS
-========================================= */
+/* ==================================================
+   COLOUR ROTATION
+================================================== */
 
-.name-card:nth-child(5n+1) {
+.name:nth-child(5n+1) {
     color: #ffd43b;
 }
 
-.name-card:nth-child(5n+2) {
+.name:nth-child(5n+2) {
     color: #ff7043;
 }
 
-.name-card:nth-child(5n+3) {
-    color: #ff4dd8;
+.name:nth-child(5n+3) {
+    color: #ff4bd8;
 }
 
-.name-card:nth-child(5n+4) {
+.name:nth-child(5n+4) {
     color: #42e8ff;
 }
 
-.name-card:nth-child(5n+5) {
+.name:nth-child(5n+5) {
     color: #9cff63;
 }
 
 
-/* =========================================
+/* ==================================================
    SCROLLBAR
-========================================= */
+================================================== */
 
-.name-grid::-webkit-scrollbar {
+#nameGrid::-webkit-scrollbar {
     width: 5px;
 }
 
-.name-grid::-webkit-scrollbar-track {
+#nameGrid::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.name-grid::-webkit-scrollbar-thumb {
+#nameGrid::-webkit-scrollbar-thumb {
 
     background:
         rgba(255,255,255,.35);
@@ -604,108 +685,85 @@ body {
 }
 
 
-/* =========================================
-   MOBILE
-========================================= */
+/* ==================================================
+   SMALL MOBILE
+================================================== */
 
-@media (max-width: 480px) {
+@media (max-width:480px) {
 
     .glass {
 
         width: 94%;
 
         border-radius: 23px;
-
-        margin-bottom: 10px;
     }
 
-    .name-grid {
+    #nameGrid {
 
-        padding: 11px;
+        padding: 10px;
 
         gap: 8px;
     }
 
-    .name-card {
+    .name {
 
-        min-height: 54px;
+        min-height: 53px;
 
         border-radius: 14px;
     }
-
-}
-
-
-/* =========================================
-   HIDE HALL DURING INTRO
-========================================= */
-
-body.intro {
-
-    background: #000;
-}
-
-
-/*
-   When intro finishes,
-   video is removed from view.
-*/
-
-body.finished #introVideo {
-
-    opacity: 0;
-
-    visibility: hidden;
-
-    pointer-events: none;
-
-    transition: opacity .25s ease;
 }
 
 </style>
 </head>
 
 
-<body class="intro">
+<body>
 
 
-<div class="page">
+<div id="page">
 
 
-    <!-- =====================================
+    <!-- =================================================
          INTRO VIDEO
 
-         NO UI IS SHOWN DURING THIS
-    ====================================== -->
+         NOTHING ELSE IS VISIBLE
+         DURING THE FIRST 0.06 SECOND
+    ================================================== -->
 
     <video
         id="introVideo"
-
-        autoplay
-        muted
         playsinline
-
         preload="auto"
-
         src="https://ap095665-boop.github.io/air/587068603_1786301278413516.mp4">
     </video>
 
 
+    <!-- =================================================
+         FALLBACK TAP SCREEN
+    ================================================== -->
 
-    <!-- =====================================
+    <div id="startScreen">
+
+        <button id="startButton">
+            🔥 TAP TO ENTER
+        </button>
+
+    </div>
+
+
+    <!-- =================================================
          HALL OF FLAMES
-    ====================================== -->
+
+         COMPLETELY HIDDEN INITIALLY
+    ================================================== -->
 
     <section id="hall">
 
+        <div class="hall-bg"></div>
 
-        <div class="hall-background"></div>
-
-
-        <div class="light one"></div>
-        <div class="light two"></div>
-        <div class="light three"></div>
-
+        <div class="light light1"></div>
+        <div class="light light2"></div>
+        <div class="light light3"></div>
 
 
         <header class="header">
@@ -721,28 +779,24 @@ body.finished #introVideo {
         </header>
 
 
-
         <div class="glass">
 
-            <div
-                id="nameGrid"
-                class="name-grid">
-            </div>
+            <div id="nameGrid"></div>
 
         </div>
-
 
     </section>
 
 </div>
 
 
-
 <script>
 
-/* =========================================
-   YOUR NAMES
-========================================= */
+/* ==================================================
+   NAMES
+
+   REPLACE THESE WITH YOUR REAL NAMES
+================================================== */
 
 const names = [
 
@@ -786,120 +840,117 @@ const names = [
     "Jacob",
     "Isaac"
 
-    /* ADD ALL YOUR OTHER NAMES HERE */
+    // ADD MORE NAMES HERE
 
 ];
 
 
-
-/* =========================================
+/* ==================================================
    ELEMENTS
-========================================= */
+================================================== */
 
 const video =
-    document.getElementById("introVideo");
+    document.getElementById(
+        "introVideo"
+    );
 
 const hall =
-    document.getElementById("hall");
+    document.getElementById(
+        "hall"
+    );
 
 const grid =
-    document.getElementById("nameGrid");
+    document.getElementById(
+        "nameGrid"
+    );
+
+const startScreen =
+    document.getElementById(
+        "startScreen"
+    );
+
+const startButton =
+    document.getElementById(
+        "startButton"
+    );
 
 
+/* ==================================================
+   EXACT INTRO DURATION
 
-/* =========================================
-   IMPORTANT:
-   0.06 SECOND INTRO
-========================================= */
+   0.06 SECOND
+================================================== */
 
-const INTRO_TIME = 0.06;
+const INTRO_DURATION = 60;
 
 
+/* ==================================================
+   PREVENT DOUBLE START
+================================================== */
 
-/* =========================================
-   SHOW HALL
-========================================= */
+let started = false;
+let finished = false;
 
-function showHall() {
 
-    if (
-        document.body.classList.contains(
-            "finished"
-        )
-    ) {
-        return;
-    }
+/* ==================================================
+   SHOW NAMES
+================================================== */
+
+function showNames() {
+
+    if (finished) return;
+
+    finished = true;
 
 
     /*
-       Stop video completely.
+       STOP VIDEO
     */
 
     video.pause();
 
-
-    /*
-       Make sure it never loops.
-    */
-
-    video.removeAttribute("loop");
+    video.loop = false;
 
 
     /*
-       Hide video.
+       Remove video completely
+       from the visual layer.
     */
 
-    document.body.classList.remove("intro");
-
-    document.body.classList.add("finished");
+    video.style.opacity = "0";
+    video.style.visibility = "hidden";
 
 
     /*
-       Show Hall of Flames.
+       Show Hall ONLY NOW.
     */
 
-    hall.classList.add("show");
+    hall.classList.add("visible");
 
 
     /*
-       Now display names.
+       Create names ONLY NOW.
     */
 
-    displayNames();
+    grid.innerHTML = "";
 
-}
-
-
-
-/* =========================================
-   DISPLAY ALL NAMES
-========================================= */
-
-function displayNames() {
-
-    /*
-       Names are NOT created while
-       the intro video is visible.
-
-       They start only AFTER 0.06s.
-    */
 
     names.forEach(
         (name, index) => {
 
             const card =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
-            card.className =
-                "name-card";
+            card.className = "name";
 
-            card.textContent =
-                name;
+            card.textContent = name;
 
 
             /*
-               Tiny stagger purely for
-               the entrance animation.
+               Stagger the visual
+               entrance slightly.
             */
 
             card.style.animationDelay =
@@ -914,113 +965,151 @@ function displayNames() {
 }
 
 
+/* ==================================================
+   START THE 0.06 SECOND VIDEO
+================================================== */
 
-/* =========================================
-   START INTRO
-========================================= */
+function startVideoSequence() {
 
-function startIntro() {
+    if (started) return;
+
+    started = true;
+
+    startScreen.style.display =
+        "none";
+
 
     /*
-       Make absolutely sure video
-       starts from beginning.
+       Start exactly from beginning.
     */
 
     video.currentTime = 0;
 
 
     /*
-       Video should NOT loop.
+       NEVER LOOP.
     */
 
     video.loop = false;
 
 
     /*
-       Play video.
-
-       NOTE:
-       Browsers generally block autoplay
-       with sound. The video is therefore
-       initially muted for autoplay.
+       Sound ON.
     */
 
-    video.muted = true;
+    video.muted = false;
 
-    video.play().catch(() => {
-
-        /*
-           If browser blocks playback,
-           wait for user interaction.
-        */
-
-        const start =
-            () => {
-
-                video.muted = false;
-
-                video.play();
-
-                document.removeEventListener(
-                    "touchstart",
-                    start
-                );
-
-                document.removeEventListener(
-                    "click",
-                    start
-                );
-
-            };
-
-
-        document.addEventListener(
-            "touchstart",
-            start,
-            { once: true }
-        );
-
-        document.addEventListener(
-            "click",
-            start,
-            { once: true }
-        );
-
-    });
+    video.volume = 1;
 
 
     /*
-       Wait exactly 0.06 seconds.
+       Start video.
+    */
+
+    const promise =
+        video.play();
+
+
+    /*
+       If browser allows sound autoplay,
+       video starts immediately.
+    */
+
+    if (promise !== undefined) {
+
+        promise.catch(() => {
+
+            /*
+               Browser blocked
+               autoplay with sound.
+
+               Show tap button.
+            */
+
+            started = false;
+
+            startScreen.style.display =
+                "flex";
+
+        });
+
+    }
+
+
+    /*
+       IMPORTANT:
+
+       Only after 60ms do we
+       reveal the Hall.
+
+       Before this point:
+       NO glass.
+       NO names.
+       NO title.
     */
 
     setTimeout(
-        showHall,
-        INTRO_TIME * 1000
+        showNames,
+        INTRO_DURATION
     );
 
 }
 
 
+/* ==================================================
+   TAP BUTTON
+================================================== */
 
-/* =========================================
-   START
-========================================= */
+startButton.addEventListener(
+    "click",
+    startVideoSequence
+);
 
-if (
-    document.readyState ===
-    "loading"
-) {
 
-    document.addEventListener(
-        "DOMContentLoaded",
-        startIntro
-    );
+/* ==================================================
+   TRY AUTOPLAY WITH SOUND
+================================================== */
 
-} else {
+window.addEventListener(
+    "load",
+    () => {
 
-    startIntro();
+        video.muted = false;
 
-}
+        video.volume = 1;
+
+        video.currentTime = 0;
+
+        video.loop = false;
+
+
+        const promise =
+            video.play();
+
+
+        if (
+            promise !== undefined
+        ) {
+
+            promise.catch(() => {
+
+                /*
+                   Autoplay with sound
+                   was blocked.
+
+                   Nothing except the
+                   tap screen is shown.
+                */
+
+                startScreen.style.display =
+                    "flex";
+
+            });
+
+        }
+
+    }
+);
 
 </script>
 
